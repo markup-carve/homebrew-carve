@@ -1,0 +1,4 @@
+The formula is written here by markup-carve/carve-rs's release workflow on the
+first release that ships binaries. Until then this directory is intentionally
+empty: a hand-written formula pointing at assets that do not exist yet would
+fail to install and would be overwritten anyway.
