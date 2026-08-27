@@ -8,18 +8,18 @@ class Carve < Formula
   on_macos do
     on_arm do
       url "https://github.com/markup-carve/carve-rs/releases/download/0.1.4/carve-0.1.4-aarch64-apple-darwin.tar.gz"
-      sha256 "51dc2716f799f92096472aa5d7abdde672fe1476daf5cad4222597fd3f74771c"
+      sha256 "70c197fa3cc8e21365498c6c7fe4687ff8e0e98d2b18e8c019ce9e7b3612a328"
     end
     on_intel do
       url "https://github.com/markup-carve/carve-rs/releases/download/0.1.4/carve-0.1.4-x86_64-apple-darwin.tar.gz"
-      sha256 "607412698a2e32200893917f2465af3295522423016909ede00cfea1b0168fb7"
+      sha256 "e67e170274e6b2caa62a696e10ec6b406fe0279ec3dcdbbbdd845b03646c4c22"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/markup-carve/carve-rs/releases/download/0.1.4/carve-0.1.4-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "de4549093d8dbb954a31fed58db1a9f9d1e45c37cbb6bcfe27a9265503ca5f5c"
+      sha256 "dd52e2d44d112a4bd70ebc4cf1925a6e39dad1c41ed0ff1da3f80e0c45c16d5b"
     end
   end
 
