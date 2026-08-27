@@ -92,12 +92,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-
-      # Installed from the checked-out path, so the job tests the formula on
-      # THIS ref rather than whatever is published on main.
+      # setup-homebrew checks the tap out under the Homebrew prefix at this
+      # ref, so no actions/checkout is needed - and adding one breaks, because
+      # it cannot re-clone over the git config setup-homebrew leaves behind.
       - name: Install
-        run: brew install --verbose --formula ./Formula/carve.rb
+        run: brew install --verbose markup-carve/carve/carve
 
       - name: Render a document end to end
         run: |
