@@ -7,8 +7,8 @@ class Crv2pdf < Formula
   desc "Render Carve documents to paginated PDF, HTML, Markdown or text"
   homepage "https://github.com/markup-carve/carve-pdf"
   url "https://github.com/markup-carve/carve-pdf.git",
-      tag:      "0.1.0",
-      revision: "e58de6ebc4440f6bef2ceb01e44fb466b868855d"
+      tag:      "0.1.1",
+      revision: "11bc4b8095f8e24af13b287f61ba7bb4d6a095a4"
   license "MIT"
   head "https://github.com/markup-carve/carve-pdf.git", branch: "main"
 
@@ -21,7 +21,7 @@ class Crv2pdf < Formula
 
   # carve-js and its entire runtime closure, staged rather than npm-installed.
   # Homebrew denies the build phase all network access, and a pinned digest is
-  # also what makes two installs of 0.1.0 the same install.
+  # also what makes two installs of one version the same install.
   resource "carve" do
     url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.9.tgz"
     sha256 "65add9205384f8f9a4d1a68c80f8367ce2339e171aacc3422ae0b746c49cf23d"
