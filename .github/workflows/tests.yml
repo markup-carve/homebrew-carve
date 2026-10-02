@@ -95,7 +95,7 @@ jobs:
       # setup-homebrew checks the tap out under the Homebrew prefix at this
       # ref, so no actions/checkout is needed - and adding one breaks, because
       # it cannot re-clone over the git config setup-homebrew leaves behind.
-      - name: Install
+      - name: Install carve
         run: brew install --verbose markup-carve/carve/carve
 
       - name: Render a document end to end
@@ -104,5 +104,20 @@ jobs:
           carve sample.crv
           carve sample.crv | grep -q '<h1'
 
-      - name: Uninstall
+      - name: Uninstall carve
         run: brew uninstall carve
+
+      - name: Install crv2pdf
+        run: brew install --verbose markup-carve/carve/crv2pdf
+
+      # Markdown, not PDF: PDF wants Chrome and two pip packages, and what this
+      # job is for is proving the engine the formula stages is reachable.
+      - name: Render a document to Markdown end to end
+        run: |
+          printf '# Hello\n' > sample.crv
+          crv2pdf --md sample.crv out.md
+          grep -q Hello out.md
+          crv2pdf --version
+
+      - name: Uninstall crv2pdf
+        run: brew uninstall crv2pdf
