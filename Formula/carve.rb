@@ -7,23 +7,23 @@ class Carve < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.7/carve-0.1.7-aarch64-apple-darwin.tar.gz"
-      sha256 "23301648aaef1a33d1108c079f4d82c8375158bfffde4b8bfe152e1d00ca6f91"
+      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.8/carve-0.1.8-aarch64-apple-darwin.tar.gz"
+      sha256 "35f0ca8e34db39592081dd31ec5348ee616193f4c23bf2744dd1cd54b03342ca"
     end
     on_intel do
-      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.7/carve-0.1.7-x86_64-apple-darwin.tar.gz"
-      sha256 "815d7c4ca2df41ef3bdee0e0cdb8d2c9526599249e85dd557b3047b2804bfb2f"
+      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.8/carve-0.1.8-x86_64-apple-darwin.tar.gz"
+      sha256 "ed497dfcd76743d499eac5031af06b35af62494edbbcd09cdb50ba486a1530de"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.7/carve-0.1.7-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "77beb8492f24dfa79227317e64aa3174da60e20543a7bcadef9514f797c3b151"
+      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.8/carve-0.1.8-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "a0926e25dd6f91a48582931e73552412cc7f6c7139ebc70332757d021100ef98"
     end
     on_intel do
-      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.7/carve-0.1.7-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "0aaf029371c1964e7069f718b6f477e4d5e20eaf18a157735283761eda8efc07"
+      url "https://github.com/markup-carve/carve-rs/releases/download/0.1.8/carve-0.1.8-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "c70bc90729a5d38b4c49104d26c80c0c6b628dd6cdb5d6ea37910af6b457825b"
     end
   end
 
