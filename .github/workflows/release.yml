@@ -1,0 +1,273 @@
+name: Release
+
+# THE TAG IS CREATED HERE, AFTER THE GATES PASS AND AFTER A HUMAN APPROVES.
+#
+# READ THIS BEFORE DISPATCHING, BECAUSE A TAP RELEASE IS NOT WHAT IT LOOKS LIKE.
+# `brew install markup-carve/carve/carve` resolves the formula from the DEFAULT
+# BRANCH, not from a tag. Every change to Formula/*.rb is live the moment it
+# lands on main - carve.rb is rewritten and pushed here by the carve-rs release
+# workflow, and crv2pdf.rb is edited by hand - so no consumer of this tap is
+# waiting on a tag, and a tag changes nothing about what anybody installs.
+#
+# A release here is therefore a MARKER AND A SET OF NOTES: it records which
+# versions the tap served at a point in time, which is what 0.1.0 and 0.1.1 did.
+# That is worth gating rather than worth automating away: the gates below refuse
+# a tag over a tap whose formulae do not install, so the marker cannot claim a
+# state that never worked. They do not pretend to hold anything back from a
+# user, because nothing here can.
+#
+# What this means in practice: the thing that protects a tap user is tests.yml
+# on every push to main, not this workflow. If a release here ever starts
+# feeling like the mechanism that ships a formula, that belief is wrong, and the
+# fix belongs in the repository that pushes the formula.
+#
+# Every job declares timeout-minutes, so a hung step fails in minutes instead of
+# inheriting GitHub's 360-minute default.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to mark, without a leading v (e.g. 0.1.2)'
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  guard:
+    name: The tag is free
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # fetch-depth: 0 for the tags: the check below asks whether a ref exists,
+      # and a shallow clone carries none of them.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: The tag does not exist yet
+        env:
+          VER: ${{ inputs.version }}
+        run: |
+          case "$VER" in
+            ""|v*|*[!0-9A-Za-z.+-]*)
+              echo "::error::[$VER] is not a bare version. This repository tags bare, so pass 0.1.2."
+              exit 1
+              ;;
+          esac
+          if git rev-parse -q --verify "refs/tags/${VER}" >/dev/null; then
+            echo "::error::Tag ${VER} already exists. Supersede it with a new version instead."
+            exit 1
+          fi
+          echo "${VER} is free"
+
+      # There is NO version surface in this repository to hold the dispatched
+      # version to, and that is a fact about the repository rather than a gap in
+      # this gate. There is no CHANGELOG.md, no manifest and no version
+      # constant: the formulae carry the versions of OTHER projects (carve.rb
+      # names a carve-rs release, crv2pdf.rb a carve-pdf tag), and this
+      # repository's own version exists only as the tag and the release notes.
+      # So the notes are the whole description of a tap release, which is why the
+      # gate on them below is stricter here than in the sibling repositories: it
+      # asks that they name the formula versions being marked.
+      - name: Report the versions the formulae currently serve
+        run: |
+          grep -oE 'carve-rs/releases/download/[0-9][^/]*' Formula/carve.rb | head -1
+          grep -A2 -E '^  url .*carve-pdf\.git' Formula/crv2pdf.rb | grep -E 'tag:|revision:'
+
+  release-notes:
+    name: A release draft for this version exists and names the formula versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      # `write`, not `read`: a DRAFT release is invisible to a caller without
+      # push access, so under `contents: read` the listing comes back empty and
+      # this gate reports "no release" for a draft sitting right there with
+      # notes in it. See markup-carve/carve-wasm#80.
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Found by LISTING rather than by `gh release view <tag>`: a draft's tag is
+      # not a git ref, so addressing one by tag can match nothing, change nothing
+      # and still exit 0.
+      - name: The draft exists, has notes, and names what the tap serves
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VER: ${{ inputs.version }}
+        run: |
+          set -uo pipefail
+          release="$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
+            --jq "[.[] | select(.tag_name == \"${VER}\")] | first")"
+          if [ -z "$release" ]; then
+            echo "::error::no release for ${VER}. Write the notes first:" \
+                 "gh release create ${VER} --draft --notes-file notes.md"
+            echo "::error::if a draft DOES exist, this job could not see it -" \
+                 "check that it still declares contents: write"
+            exit 1
+          fi
+          body="$(printf '%s' "$release" | jq -r '.body // ""')"
+          printf '%s' "$release" | jq -r '"draft=\(.draft) tag=\(.tag_name)"'
+          if [ "${#body}" -lt 40 ]; then
+            echo "::error::the release for ${VER} carries ${#body} characters of notes." \
+                 "That is not a description of a release."
+            exit 1
+          fi
+
+          # The notes ARE the release here, because nothing else in this
+          # repository records what a version means. A tap marker that does not
+          # say which formula versions it marks records nothing a reader can use.
+          carve_ver="$(grep -oE 'carve-rs/releases/download/[0-9][^/]*' Formula/carve.rb \
+            | head -1 | sed 's|.*/||')"
+          pdf_ver="$(sed -n 's/.*tag: *"\([^"]*\)".*/\1/p' Formula/crv2pdf.rb | head -1)"
+          echo "carve.rb serves carve-rs ${carve_ver}; crv2pdf.rb serves carve-pdf ${pdf_ver}"
+          missing=""
+          for v in "$carve_ver" "$pdf_ver"; do
+            case "$body" in
+              *"$v"*) ;;
+              *) missing="${missing} ${v}" ;;
+            esac
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::the notes for ${VER} do not mention the formula version(s):${missing}"
+            echo "::error::a tap release is only a record of what the tap serves, so the notes"
+            echo "::error::have to name it."
+            exit 1
+          fi
+          echo "the notes name every formula version the tap serves"
+
+  formulae:
+    name: Every formula the tap serves installs and runs
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: ghcr.io/homebrew/brew:main # zizmor: ignore[unpinned-images]
+      options: --privileged
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@8f3d1ec8a696b3b9d9a6c3696b6c73033cab69e4 # 2026.08.14.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # setup-homebrew checks the tap out under the Homebrew prefix at this ref,
+      # so no actions/checkout is needed here - and adding one breaks, because it
+      # cannot re-clone over the git config setup-homebrew leaves behind.
+      - run: brew test-bot --only-cleanup-before
+      - run: brew test-bot --only-setup
+      - run: brew test-bot --only-tap-syntax
+
+      # test-bot on a pull request only exercises a formula the pull request
+      # CHANGED, and carve.rb is rewritten here by another repository's release
+      # workflow. So a release could mark a tap state nothing had ever installed.
+      # This installs whatever the formulae currently pin, which is also what
+      # checks every `sha256` against the bytes actually served at its URL - a
+      # release asset that was moved or re-uploaded fails here.
+      - name: Install carve and render a document
+        run: |
+          brew install --verbose markup-carve/carve/carve
+          printf '# Hello\n' > sample.crv
+          carve sample.crv | grep -q '<h1'
+          brew uninstall carve
+
+      # Markdown, not PDF: PDF wants Chrome and two pip packages, and what this
+      # proves is that the engine the formula stages is reachable.
+      - name: Install crv2pdf and render a document
+        run: |
+          brew install --verbose markup-carve/carve/crv2pdf
+          printf '# Hello\n' > sample.crv
+          crv2pdf --md sample.crv out.md
+          grep -q Hello out.md
+          crv2pdf --version
+          brew uninstall crv2pdf
+
+  tag:
+    name: Create the tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [guard, release-notes, formulae]
+    # THE APPROVAL GATE, and the ONLY job that carries an environment. GitHub
+    # prompts once per gated JOB, so a second one would ask twice for one
+    # decision, and the second prompt would arrive after the tag already existed
+    # and so could withhold nothing.
+    environment: release-approval
+    permissions:
+      # Without this the push 403s AFTER the approval has been spent.
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push the tag
+        env:
+          VER: ${{ inputs.version }}
+        run: |
+          # Re-checked under the approval: main can move while a run waits for a
+          # reviewer, and here it moves on somebody else's schedule - the
+          # carve-rs release workflow pushes carve.rb into this repository
+          # directly. If it did so while this run waited, the formulae the
+          # `formulae` job installed are not the ones this tag would mark.
+          if [ "$(git rev-parse HEAD)" != "$GITHUB_SHA" ]; then
+            echo "::error::the checkout is not the commit this run gated."
+            exit 1
+          fi
+          git fetch --no-tags origin main
+          if [ "$(git rev-parse FETCH_HEAD)" != "$GITHUB_SHA" ]; then
+            echo "::error::main moved to $(git rev-parse --short FETCH_HEAD) while this run waited"
+            echo "::error::for approval, so the formulae that were installed are not the ones this"
+            echo "::error::tag would mark. Re-run the workflow."
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/${VER}" >/dev/null; then
+            echo "::error::Tag ${VER} appeared while this run waited for approval. Stopping."
+            exit 1
+          fi
+          git tag "$VER" "$GITHUB_SHA"
+          git push origin "refs/tags/${VER}"
+          echo "tagged ${VER} at $GITHUB_SHA"
+
+  publish:
+    name: Publish the release notes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [tag]
+    # NO `environment:` here - see the comment on `tag`. `needs: [tag]` already
+    # makes this unreachable without the approval.
+    permissions:
+      contents: write
+    steps:
+      # There is no registry step, and there is nothing a tap could push to one.
+      # The notes are the release; this is what makes them readable.
+      - name: Un-draft the release for this version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VER: ${{ inputs.version }}
+        run: |
+          set -uo pipefail
+          id="$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
+            --jq "[.[] | select(.tag_name == \"${VER}\" and .draft)] | first | .id // empty")"
+          if [ -z "$id" ]; then
+            echo "No draft release for ${VER}; nothing to publish."
+            exit 0
+          fi
+          # `tag_name` goes with every PATCH of a release. Omit it on a DRAFT and
+          # GitHub replaces the tag with a generated `untagged-*` placeholder,
+          # because a draft's tag is a string on the object rather than a git
+          # ref. `-F` (not `-f`) for draft, so it is sent as a boolean: the
+          # string "false" is truthy and would publish anyway.
+          gh api "repos/$GITHUB_REPOSITORY/releases/$id" -X PATCH \
+            -f tag_name="$VER" -F draft=false --jq '"published \(.tag_name)"'
+          # Read it back: an exit status does not tell you whether the tag survived.
+          gh api "repos/$GITHUB_REPOSITORY/releases/$id" \
+            --jq '"draft=\(.draft) tag=\(.tag_name)"'
