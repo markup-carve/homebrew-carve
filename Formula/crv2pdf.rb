@@ -7,8 +7,8 @@ class Crv2pdf < Formula
   desc "Render Carve documents to paginated PDF, HTML, Markdown or text"
   homepage "https://github.com/markup-carve/carve-pdf"
   url "https://github.com/markup-carve/carve-pdf.git",
-      tag:      "0.1.1",
-      revision: "11bc4b8095f8e24af13b287f61ba7bb4d6a095a4"
+      tag:      "0.1.2",
+      revision: "e208c8253c71860dd4686618a123e8d19d05f794"
   license "MIT"
   head "https://github.com/markup-carve/carve-pdf.git", branch: "main"
 
