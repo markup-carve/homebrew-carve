@@ -83,7 +83,7 @@ jobs:
       - name: Report the versions the formulae currently serve
         run: |
           grep -oE 'carve-rs/releases/download/[0-9][^/]*' Formula/carve.rb | head -1
-          grep -A2 -E '^  url .*carve-pdf\.git' Formula/crv2pdf.rb | grep -E 'tag:|revision:'
+          grep -oE 'carve-pdf/archive/refs/tags/[^"]+\.tar\.gz' Formula/crv2pdf.rb
 
   release-notes:
     name: A release draft for this version exists and names the formula versions
@@ -129,8 +129,14 @@ jobs:
           # say which formula versions it marks records nothing a reader can use.
           carve_ver="$(grep -oE 'carve-rs/releases/download/[0-9][^/]*' Formula/carve.rb \
             | head -1 | sed 's|.*/||')"
-          pdf_ver="$(sed -n 's/.*tag: *"\([^"]*\)".*/\1/p' Formula/crv2pdf.rb | head -1)"
+          pdf_ver="$(sed -n 's|.*carve-pdf/archive/refs/tags/\([^"]*\)\.tar\.gz.*|\1|p' Formula/crv2pdf.rb | head -1)"
           echo "carve.rb serves carve-rs ${carve_ver}; crv2pdf.rb serves carve-pdf ${pdf_ver}"
+          # An empty version matches every body, so a formula whose URL form
+          # this cannot read would pass the check below without checking anything.
+          if [ -z "$carve_ver" ] || [ -z "$pdf_ver" ]; then
+            echo "::error::could not read a formula version from Formula/*.rb; update this gate"
+            exit 1
+          fi
           missing=""
           for v in "$carve_ver" "$pdf_ver"; do
             case "$body" in

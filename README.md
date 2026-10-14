@@ -42,11 +42,10 @@ x86-64 (glibc). The release also carries a musl Linux archive and a Windows
 archive, which Homebrew does not install; take those from the
 [releases page](https://github.com/markup-carve/carve-rs/releases) directly.
 
-`Formula/crv2pdf.rb` is **hand-written**, because there is nothing to generate.
-[markup-carve/carve-pdf](https://github.com/markup-carve/carve-pdf) ships bash
-and Python rather than a compiled binary, so one git tag with its revision
-covers every platform and no digest has to be read back out of a release. A new
-version is a two-line edit: the tag and the revision.
+`Formula/crv2pdf.rb` is hand-written. To update it, set the release archive
+URL and its SHA256 after carve-pdf publishes the tag. When the JavaScript
+engine changes, update its resource URL and SHA256 too. The source archive
+contains the same scripts and themes on every platform.
 
 ## Reporting a problem
 

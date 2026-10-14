@@ -1,14 +1,9 @@
-# Hand-written, unlike Formula/carve.rb beside it. That one is generated because
-# carve-rs publishes a binary per platform and its release workflow reads the
-# digests out of the sidecars it just uploaded. carve-pdf is a bash front end
-# with no build step and no per-platform asset, so a tag with a revision pins it
-# exactly and a generator would have nothing left to compute.
+# Hand-written formula for the platform-neutral carve-pdf source archive.
 class Crv2pdf < Formula
   desc "Render Carve documents to paginated PDF, HTML, Markdown or text"
   homepage "https://github.com/markup-carve/carve-pdf"
-  url "https://github.com/markup-carve/carve-pdf.git",
-      tag:      "0.1.2",
-      revision: "e208c8253c71860dd4686618a123e8d19d05f794"
+  url "https://github.com/markup-carve/carve-pdf/archive/refs/tags/0.1.3.tar.gz"
+  sha256 "bb255015c3b51bb448fea3086e6b69d0a0a6b87107f6d5d6d7f155c86febc8eb"
   license "MIT"
   head "https://github.com/markup-carve/carve-pdf.git", branch: "main"
 
@@ -23,8 +18,8 @@ class Crv2pdf < Formula
   # Homebrew denies the build phase all network access, and a pinned digest is
   # also what makes two installs of one version the same install.
   resource "carve" do
-    url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.10.tgz"
-    sha256 "88a7c47eac5420d1c03f87b4dc45b068d3b5b98cdc22e3dc5895ae99040e1609"
+    url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.11.tgz"
+    sha256 "e081802d4ffb41f7a1cf914788441e8cca3027b0383fd9598a7664fb4080d0c4"
   end
 
   resource "parse5" do
