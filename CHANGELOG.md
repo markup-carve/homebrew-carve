@@ -8,7 +8,7 @@ when it merges, not when a version is tagged.
 
 ### Improvements
 
-- `crv2pdf` installs carve-pdf 0.1.3 from its release source archive, pinned by sha256, after serving 0.1.2 (#10, #11).
+- `crv2pdf` installs carve-pdf 0.1.4, its security release, from its release source archive, pinned by sha256, after serving 0.1.2 (#10, #11, #13).
 - `crv2pdf` stages the carve-js 0.1.11 engine, after 0.1.10 (#9, #11).
 - `carve` follows carve-rs to 0.1.9.
 
