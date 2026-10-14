@@ -42,9 +42,10 @@ x86-64 (glibc). The release also carries a musl Linux archive and a Windows
 archive, which Homebrew does not install; take those from the
 [releases page](https://github.com/markup-carve/carve-rs/releases) directly.
 
-`Formula/crv2pdf.rb` is hand-written. Its 0.1.3 archive digest must be filled
-in after carve-pdf publishes the tag. The pending formula uses the published
-Carve JavaScript package 0.1.11 with a checked digest.
+`Formula/crv2pdf.rb` is hand-written. To update it, set the release archive
+URL and its SHA256 after carve-pdf publishes the tag. When the JavaScript
+engine changes, update its resource URL and SHA256 too. The source archive
+contains the same scripts and themes on every platform.
 
 ## Reporting a problem
 

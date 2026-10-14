@@ -1,8 +1,5 @@
-# Hand-written, unlike Formula/carve.rb beside it. That one is generated because
-# carve-rs publishes a binary per platform and its release workflow reads the
-# digests out of the sidecars it just uploaded. carve-pdf is a bash front end
-# with no build step and no per-platform asset, so a tag with a revision pins it
-# exactly and a generator would have nothing left to compute.
+# Hand-written formula for the platform-neutral carve-pdf source archive.
+# Set the archive URL and SHA256 from the published release before merging.
 class Crv2pdf < Formula
   desc "Render Carve documents to paginated PDF, HTML, Markdown or text"
   homepage "https://github.com/markup-carve/carve-pdf"
