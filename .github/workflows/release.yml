@@ -73,10 +73,10 @@ jobs:
 
       # There is NO version surface in this repository to hold the dispatched
       # version to, and that is a fact about the repository rather than a gap in
-      # this gate. There is no CHANGELOG.md, no manifest and no version
-      # constant: the formulae carry the versions of OTHER projects (carve.rb
-      # names a carve-rs release, crv2pdf.rb a carve-pdf tag), and this
-      # repository's own version exists only as the tag and the release notes.
+      # this gate. There is no manifest and no version constant: the formulae
+      # carry the versions of OTHER projects (carve.rb names a carve-rs release,
+      # crv2pdf.rb a carve-pdf archive), and this repository's own version exists
+      # only as the tag, the CHANGELOG.md section and the release notes.
       # So the notes are the whole description of a tap release, which is why the
       # gate on them below is stricter here than in the sibling repositories: it
       # asks that they name the formula versions being marked.
