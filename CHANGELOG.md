@@ -4,6 +4,13 @@ Each version records which formula versions the tap served when it was marked.
 `brew install` reads the formulae from `main`, so a formula change reaches users
 when it merges, not when a version is tagged.
 
+## [0.1.3]
+
+### Improvements
+
+- `crv2pdf` stages the carve-js 0.1.12 engine, after 0.1.11 (#14).
+- `carve` follows carve-rs to 0.1.10.
+
 ## [0.1.2]
 
 ### Improvements
