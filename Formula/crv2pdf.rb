@@ -4,8 +4,8 @@ class Crv2pdf < Formula
   homepage "https://github.com/markup-carve/carve-pdf"
   url "https://github.com/markup-carve/carve-pdf/archive/refs/tags/0.1.4.tar.gz"
   sha256 "063469822fc23f5b996e794d93f12e606431ed0c813d7097c7fba7c569d47b05"
-  revision 1
   license "MIT"
+  revision 1
   head "https://github.com/markup-carve/carve-pdf.git", branch: "main"
 
   # The only hard dependency, and it is here for the engine rather than for node

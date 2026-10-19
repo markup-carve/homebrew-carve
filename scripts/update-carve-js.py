@@ -92,7 +92,7 @@ def update(formula):
     updated = formula[:current.start("body")] + new_body + formula[current.end("body"):]
     revised, count = re.subn(r"^  revision ([0-9]+)$", lambda match: f"  revision {int(match.group(1)) + 1}", updated, count=1, flags=re.M)
     if count == 0:
-        revised, count = re.subn(r'^(  sha256 "[0-9a-f]{64}")$', r'\1\n  revision 1', updated, count=1, flags=re.M)
+        revised, count = re.subn(r'^(  license "[^"]+")$', r'\1\n  revision 1', updated, count=1, flags=re.M)
         if count != 1:
             raise ValueError("Cannot add crv2pdf formula revision")
     return revised, latest, True
