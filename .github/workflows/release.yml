@@ -144,7 +144,7 @@ jobs:
             exit 1
           fi
           missing=""
-          for v in "$carve_ver" "$pdf_ver" "$js_ver"; do
+          for v in "carve-rs ${carve_ver}" "carve-pdf ${pdf_ver}" "carve-js ${js_ver}"; do
             case "$body" in
               *"$v"*) ;;
               *) missing="${missing} ${v}" ;;
