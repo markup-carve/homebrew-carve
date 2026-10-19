@@ -85,6 +85,11 @@ jobs:
           grep -oE 'carve-rs/releases/download/[0-9][^/]*' Formula/carve.rb | head -1
           grep -oE 'carve-pdf/archive/refs/tags/[^"]+\.tar\.gz' Formula/crv2pdf.rb
 
+      - name: Formula dependencies match current releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/check-release-dependencies.sh
+
   release-notes:
     name: A release draft for this version exists and names the formula versions
     runs-on: ubuntu-latest
@@ -130,15 +135,16 @@ jobs:
           carve_ver="$(grep -oE 'carve-rs/releases/download/[0-9][^/]*' Formula/carve.rb \
             | head -1 | sed 's|.*/||')"
           pdf_ver="$(sed -n 's|.*carve-pdf/archive/refs/tags/\([^"]*\)\.tar\.gz.*|\1|p' Formula/crv2pdf.rb | head -1)"
-          echo "carve.rb serves carve-rs ${carve_ver}; crv2pdf.rb serves carve-pdf ${pdf_ver}"
+          js_ver="$(sed -n 's|.*@markup-carve/carve/-/carve-\([^/\"]*\)\.tgz.*|\1|p' Formula/crv2pdf.rb | head -1)"
+          echo "carve.rb serves carve-rs ${carve_ver}; crv2pdf.rb serves carve-pdf ${pdf_ver} and carve-js ${js_ver}"
           # An empty version matches every body, so a formula whose URL form
           # this cannot read would pass the check below without checking anything.
-          if [ -z "$carve_ver" ] || [ -z "$pdf_ver" ]; then
+          if [ -z "$carve_ver" ] || [ -z "$pdf_ver" ] || [ -z "$js_ver" ]; then
             echo "::error::could not read a formula version from Formula/*.rb; update this gate"
             exit 1
           fi
           missing=""
-          for v in "$carve_ver" "$pdf_ver"; do
+          for v in "carve-rs ${carve_ver}" "carve-pdf ${pdf_ver}" "carve-js ${js_ver}"; do
             case "$body" in
               *"$v"*) ;;
               *) missing="${missing} ${v}" ;;
@@ -218,6 +224,7 @@ jobs:
       - name: Push the tag
         env:
           VER: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           # Re-checked under the approval: main can move while a run waits for a
           # reviewer, and here it moves on somebody else's schedule - the
@@ -235,6 +242,7 @@ jobs:
             echo "::error::tag would mark. Re-run the workflow."
             exit 1
           fi
+          bash scripts/check-release-dependencies.sh
           if git rev-parse -q --verify "refs/tags/${VER}" >/dev/null; then
             echo "::error::Tag ${VER} appeared while this run waited for approval. Stopping."
             exit 1
