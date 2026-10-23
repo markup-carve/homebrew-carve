@@ -51,7 +51,7 @@ jobs:
     steps:
       # fetch-depth: 0 for the tags: the check below asks whether a ref exists,
       # and a shallow clone carries none of them.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -101,7 +101,7 @@ jobs:
       # notes in it. See markup-carve/carve-wasm#80.
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Found by LISTING rather than by `gh release view <tag>`: a draft's tag is
       # not a git ref, so addressing one by tag can match nothing, change nothing
@@ -217,7 +217,7 @@ jobs:
       # Without this the push 403s AFTER the approval has been spent.
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
