@@ -10,7 +10,8 @@ The tap now installs carve-pdf 0.1.5 and stages carve-js 0.1.14 for crv2pdf. The
 
 ### Improvements
 
-- `crv2pdf` installs carve-pdf 0.1.5 and stages carve-js 0.1.14 (#20).
+- `crv2pdf` installs carve-pdf 0.1.5.
+- `crv2pdf` stages carve-js 0.1.14 (#20).
 - `carve` installs carve 0.1.12.
 
 **Full Changelog**: https://github.com/markup-carve/homebrew-carve/compare/0.1.4...0.1.5
