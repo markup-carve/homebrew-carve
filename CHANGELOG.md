@@ -4,6 +4,16 @@ Each version records which formula versions the tap served when it was marked.
 `brew install` reads the formulae from `main`, so a formula change reaches users
 when it merges, not when a version is tagged.
 
+## [0.1.6]
+
+The tap now installs carve 0.1.13 and stages carve-js 0.1.15 for `crv2pdf`.
+
+### Improvements
+
+- Task lists in the CLI and PDF engine recognize progress `[/]`, blocked `[!]`, and open alias `[_]` states (#22).
+
+**Full Changelog**: https://github.com/markup-carve/homebrew-carve/compare/0.1.5...0.1.6
+
 ## [0.1.5]
 
 The tap now installs carve-pdf 0.1.5 and stages carve-js 0.1.14 for crv2pdf. The carve formula serves carve 0.1.12.
