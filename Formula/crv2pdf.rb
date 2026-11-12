@@ -80,11 +80,17 @@ class Crv2pdf < Formula
 
       - one
       - two
+
+      |={<} Item |={>} Qty |
+      | apples | 3 |
     CRV
 
     system bin/"crv2pdf", "--md", testpath/"doc.crv", testpath/"doc.md"
     assert_match "Heading", (testpath/"doc.md").read
     assert_match "one", (testpath/"doc.md").read
+    # Braced alignment (after carve-js 0.1.15): an engine without it prints the
+    # header cells as text and loses the right-aligned column.
+    assert_match "| :--- | ---: |", (testpath/"doc.md").read
 
     system bin/"crv2pdf", "--txt", testpath/"doc.crv", testpath/"doc.txt"
     assert_match "Heading", (testpath/"doc.txt").read
