@@ -2,10 +2,9 @@
 class Crv2pdf < Formula
   desc "Render Carve documents to paginated PDF, HTML, Markdown or text"
   homepage "https://github.com/markup-carve/carve-pdf"
-  url "https://github.com/markup-carve/carve-pdf/archive/refs/tags/0.1.5.tar.gz"
-  sha256 "2da6aa057a4d9e0ba45fb5d9b6ac5bb3eeb92368086484e0ae81ca358a1bb13e"
+  url "https://github.com/markup-carve/carve-pdf/archive/refs/tags/0.1.6.tar.gz"
+  sha256 "0467d31d797ce004f7ece9081a323b078471969570b37121b426cba6fd6e4012"
   license "MIT"
-  revision 2
   head "https://github.com/markup-carve/carve-pdf.git", branch: "main"
 
   # The only hard dependency, and it is here for the engine rather than for node
