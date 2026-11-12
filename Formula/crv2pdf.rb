@@ -5,7 +5,7 @@ class Crv2pdf < Formula
   url "https://github.com/markup-carve/carve-pdf/archive/refs/tags/0.1.5.tar.gz"
   sha256 "2da6aa057a4d9e0ba45fb5d9b6ac5bb3eeb92368086484e0ae81ca358a1bb13e"
   license "MIT"
-  revision 1
+  revision 2
   head "https://github.com/markup-carve/carve-pdf.git", branch: "main"
 
   # The only hard dependency, and it is here for the engine rather than for node
@@ -19,8 +19,8 @@ class Crv2pdf < Formula
   # Homebrew denies the build phase all network access, and a pinned digest is
   # also what makes two installs of one version the same install.
   resource "carve" do
-    url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.15.tgz"
-    sha256 "d124e59d2d2f2cfa8303a86d083e86b27cc0f7ee45c693af2a37339c94e05814"
+    url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.16.tgz"
+    sha256 "f4d7e7c5cfe2368bc062fa9ee5c511cc03295b2b1f48971c9e7837eb7fb27f01"
   end
 
   resource "parse5" do
