@@ -18,8 +18,8 @@ class Crv2pdf < Formula
   # Homebrew denies the build phase all network access, and a pinned digest is
   # also what makes two installs of one version the same install.
   resource "carve" do
-    url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.16.tgz"
-    sha256 "f4d7e7c5cfe2368bc062fa9ee5c511cc03295b2b1f48971c9e7837eb7fb27f01"
+    url "https://registry.npmjs.org/@markup-carve/carve/-/carve-0.1.17.tgz"
+    sha256 "39c4bb6da2241ce868acda09ea6df67f16e4821f5b9ca866341d831e018909b9"
   end
 
   resource "parse5" do
