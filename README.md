@@ -38,7 +38,7 @@ each, then rewrites the formula to point at those exact bytes and commits it
 here. Editing that formula by hand works until the next release overwrites it.
 
 Platforms it covers: macOS on Apple silicon, macOS on Intel, and Linux on
-x86-64 (glibc). The release also carries a musl Linux archive and a Windows
+x86-64 and ARM64 (glibc). The release also carries a musl Linux archive and a Windows
 archive, which Homebrew does not install; take those from the
 [releases page](https://github.com/markup-carve/carve-rs/releases) directly.
 
